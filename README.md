@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.org/amitaibu/elm-test.svg?branch=master)](https://travis-ci.org/amitaibu/elm-test)
+[![Build Status](https://travis-ci.org/Gizra/generator-elmlang-example.svg?branch=master)](https://travis-ci.org/Gizra/generator-elmlang-example)
 
 
-> elm-test
+> generator-elmlang-example
 
 ## Installation
 
