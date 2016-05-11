@@ -1,23 +1,8 @@
 
-import Effects exposing (Never)
 import Counter exposing (init, update, view)
-import StartApp
-import Task
 
-
-app =
-  StartApp.start
-    { init = init
-    , update = update
-    , view = view
-    , inputs = []
-    }
-
+import Html.App as Html
 
 main =
-  app.html
-
-
-port tasks : Signal (Task.Task Never ())
-port tasks =
-  app.tasks
+  Html.program
+    { init = init, update = update, view = view, subscriptions = \_ -> Sub.none }
