@@ -1,7 +1,6 @@
-module Main where
+module Main exposing (..)
 
 import ElmTest exposing (..)
-import Graphics.Element exposing (Element)
 
 import CounterTest exposing (all)
 
@@ -11,6 +10,5 @@ allTests =
     [ CounterTest.all
     ]
 
-main : Element
 main =
-  elementRunner allTests
+  runSuiteHtml allTests

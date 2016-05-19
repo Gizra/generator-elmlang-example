@@ -1,4 +1,4 @@
-module CounterTest where
+module CounterTest exposing (..)
 
 import ElmTest exposing (..)
 
@@ -20,7 +20,7 @@ incrementActionSuite =
     , test "positive count" (assertEqual 2 (updateCounter Counter.Increment 1))
     ]
 
-updateCounter : Counter.Action -> Int -> Counter.Model
+updateCounter : Counter.Msg -> Int -> Counter.Model
 updateCounter action initialModel =
   fst <| Counter.update action initialModel
 

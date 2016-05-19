@@ -1,3 +1,4 @@
+module Main exposing (..)
 
 import Counter exposing (init, update, view)
 
