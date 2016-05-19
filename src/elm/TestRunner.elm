@@ -10,5 +10,6 @@ allTests =
     [ CounterTest.all
     ]
 
+main : Program Never
 main =
   runSuiteHtml allTests
