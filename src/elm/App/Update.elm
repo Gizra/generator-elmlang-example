@@ -24,52 +24,61 @@ init =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        Logout ->
-            init
+    let
+        backendUrl =
+            case model.config of
+                Success config ->
+                    config.backendUrl
 
-        PageCounter msg ->
-            let
-                ( val, cmds ) =
-                    Pages.Counter.Update.update msg model.pageCounter
+                _ ->
+                    ""
+    in
+        case msg of
+            Logout ->
+                init
 
-                model' =
-                    { model | pageCounter = val }
-            in
-                ( model', Cmd.map PageCounter cmds )
+            PageCounter msg ->
+                let
+                    ( val, cmds ) =
+                        Pages.Counter.Update.update msg model.pageCounter
 
-        PageLogin msg ->
-            let
-                ( val, cmds, user ) =
-                    Pages.Login.Update.update model.user msg model.pageLogin
+                    model' =
+                        { model | pageCounter = val }
+                in
+                    ( model', Cmd.map PageCounter cmds )
 
-                model' =
-                    { model
-                        | pageLogin = val
-                        , user = user
-                    }
+            PageLogin msg ->
+                let
+                    ( val, cmds, user ) =
+                        Pages.Login.Update.update backendUrl model.user msg model.pageLogin
 
-                model'' =
-                    case user of
-                        -- If user was successfuly fetched, reditect to my
-                        -- account page.
-                        Success _ ->
-                            update (SetActivePage MyAccount) model'
-                                |> fst
+                    model' =
+                        { model
+                            | pageLogin = val
+                            , user = user
+                        }
 
-                        _ ->
-                            model'
-            in
-                ( model'', Cmd.map PageLogin cmds )
+                    model'' =
+                        case user of
+                            -- If user was successfuly fetched, reditect to my
+                            -- account page.
+                            Success _ ->
+                                update (SetActivePage MyAccount) model'
+                                    |> fst
 
-        SetActivePage page ->
-            { model | activePage = setActivePageAccess model.user page } ! []
+                            _ ->
+                                model'
+                in
+                    ( model'', Cmd.map PageLogin cmds )
 
-        SetConfig config ->
-            { model | config = Success config } ! []
+            SetActivePage page ->
+                { model | activePage = setActivePageAccess model.user page } ! []
 
-        SetConfigError ->
-            { model | config = Failure "No config found" } ! []
+            SetConfig config ->
+                { model | config = Success config } ! []
+
+            SetConfigError ->
+                { model | config = Failure "No config found" } ! []
 
 
 {-| Determine is a page can be accessed by a user (anonymous or authenticated),

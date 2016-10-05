@@ -1,6 +1,6 @@
 module Pages.Login.Update exposing (update, Msg(..))
 
-import RemoteData exposing (RemoteData(..), WebData)
+import Config.Model exposing (BackendUrl)
 import Http
 import Regex exposing (regex, replace, HowMany(All))
 import String exposing (isEmpty)
@@ -8,6 +8,7 @@ import Task
 import User.Decoder exposing (..)
 import User.Model exposing (..)
 import Pages.Login.Model as Login exposing (..)
+import RemoteData exposing (RemoteData(..), WebData)
 
 
 type Msg
@@ -22,8 +23,8 @@ init =
     emptyModel ! []
 
 
-update : WebData User -> Msg -> Model -> ( Model, Cmd Msg, WebData User )
-update user msg model =
+update : BackendUrl -> WebData User -> Msg -> Model -> ( Model, Cmd Msg, WebData User )
+update backendUrl user msg model =
     case msg of
         FetchSucceed github ->
             ( model, Cmd.none, Success github )
@@ -45,7 +46,7 @@ update user msg model =
         TryLogin ->
             let
                 ( cmd, userStatus ) =
-                    getCmdAndUserStatusForTryLogin user model.login
+                    getCmdAndUserStatusForTryLogin backendUrl user model.login
             in
                 ( model, cmd, userStatus )
 
@@ -54,8 +55,8 @@ update user msg model =
 In case we are still loading, error or a succesful fetch we don't want to repeat
 it.
 -}
-getCmdAndUserStatusForTryLogin : WebData User -> String -> ( Cmd Msg, WebData User )
-getCmdAndUserStatusForTryLogin user login =
+getCmdAndUserStatusForTryLogin : BackendUrl -> WebData User -> String -> ( Cmd Msg, WebData User )
+getCmdAndUserStatusForTryLogin backendUrl user login =
     case user of
         NotAsked ->
             if isEmpty login then
@@ -64,7 +65,7 @@ getCmdAndUserStatusForTryLogin user login =
             else
                 -- Fetch the login from GitHub, and indicate we are
                 -- in the middle of "Loading".
-                ( fetchFromGitHub login, Loading )
+                ( fetchFromGitHub backendUrl login, Loading )
 
         _ ->
             -- We are not in "NotAsked" state, so return the existing
@@ -91,10 +92,10 @@ getUserStatusFromNameChange user currentName newName =
 
 {-| Get data from GitHub.
 -}
-fetchFromGitHub : String -> Cmd Msg
-fetchFromGitHub login =
+fetchFromGitHub : BackendUrl -> String -> Cmd Msg
+fetchFromGitHub backendUrl login =
     let
         url =
-            "https://api.github.com/users/" ++ login
+            backendUrl ++ "/users/" ++ login
     in
         Task.perform FetchFail FetchSucceed (Http.get decodeFromGithub url)
