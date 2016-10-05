@@ -9,8 +9,17 @@ import RouteUrl exposing (HistoryEntry(..), UrlChange)
 delta2url : Model -> Model -> Maybe UrlChange
 delta2url previous current =
     case current.activePage of
+        AccessDenied ->
+            Nothing
+
         Counter ->
             Just <| UrlChange NewEntry "/#counter"
+
+        Login ->
+            Just <| UrlChange NewEntry "/#login"
+
+        MyAccount ->
+            Just <| UrlChange NewEntry "/#my-account"
 
         PageNotFound ->
             Just <| UrlChange NewEntry "/#404"
@@ -24,6 +33,12 @@ location2messages location =
 
         "#counter" ->
             [ SetActivePage Counter ]
+
+        "#login" ->
+            [ SetActivePage Login ]
+
+        "#my-account" ->
+            [ SetActivePage MyAccount ]
 
         "#404" ->
             [ SetActivePage PageNotFound ]
