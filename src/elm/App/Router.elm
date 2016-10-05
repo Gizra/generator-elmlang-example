@@ -2,6 +2,7 @@ module App.Router exposing (delta2url, location2messages)
 
 import App.Model exposing (..)
 import App.Update exposing (..)
+import Config.Model as Config
 import Navigation exposing (Location)
 import RouteUrl exposing (HistoryEntry(..), UrlChange)
 

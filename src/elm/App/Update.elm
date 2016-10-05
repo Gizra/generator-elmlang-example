@@ -1,10 +1,10 @@
 module App.Update exposing (init, update, Msg(..))
 
 import App.Model exposing (..)
-import Config.Update exposing (init, Action)
-import Exts.RemoteData exposing (RemoteData(..), WebData)
+import Config.Model as Config
 import Pages.Counter.Update exposing (Msg)
 import Pages.Login.Update exposing (Msg)
+import RemoteData exposing (RemoteData(..), WebData)
 import User.Model exposing (..)
 
 
@@ -13,6 +13,8 @@ type Msg
     | PageCounter Pages.Counter.Update.Msg
     | PageLogin Pages.Login.Update.Msg
     | SetActivePage Page
+    | SetConfig Config.Model
+    | SetConfigError
 
 
 init : ( Model, Cmd Msg )
@@ -62,6 +64,12 @@ update msg model =
 
         SetActivePage page ->
             { model | activePage = setActivePageAccess model.user page } ! []
+
+        SetConfig config ->
+            { model | config = Success config } ! []
+
+        SetConfigError ->
+            { model | config = Failure "No config found" } ! []
 
 
 {-| Determine is a page can be accessed by a user (anonymous or authenticated),
