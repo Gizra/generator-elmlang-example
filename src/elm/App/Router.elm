@@ -2,7 +2,7 @@ module App.Router exposing (delta2url, location2messages)
 
 import App.Model exposing (..)
 import App.Update exposing (..)
-import Config.Model as Config
+import Config exposing (backends)
 import Navigation exposing (Location)
 import RouteUrl exposing (HistoryEntry(..), UrlChange)
 
@@ -28,21 +28,45 @@ delta2url previous current =
 
 location2messages : Location -> List Msg
 location2messages location =
-    case location.hash of
-        "" ->
-            []
+    let
+        cmd =
+            case location.hash of
+                "" ->
+                    []
 
-        "#counter" ->
-            [ SetActivePage Counter ]
+                "#counter" ->
+                    [ SetActivePage Counter ]
 
-        "#login" ->
-            [ SetActivePage Login ]
+                "#login" ->
+                    [ SetActivePage Login ]
 
-        "#my-account" ->
-            [ SetActivePage MyAccount ]
+                "#my-account" ->
+                    [ SetActivePage MyAccount ]
 
-        "#404" ->
-            [ SetActivePage PageNotFound ]
+                "#404" ->
+                    [ SetActivePage PageNotFound ]
 
-        _ ->
-            [ SetActivePage PageNotFound ]
+                _ ->
+                    [ SetActivePage PageNotFound ]
+    in
+        getConfigFromLocation location :: cmd
+
+
+
+-- @todo: We calcualte the config over and over again. It's not expensive
+-- but redundent.
+
+
+getConfigFromLocation : Location -> Msg
+getConfigFromLocation location =
+    let
+        config =
+            List.filter (\backend -> backend.hostname == location.hostname) backends
+                |> List.head
+    in
+        case config of
+            Just val ->
+                SetConfig val
+
+            Nothing ->
+                SetConfigError
