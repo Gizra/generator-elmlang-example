@@ -32,7 +32,7 @@ getLogin : String -> String
 getLogin login =
     let
         ( model, _, _ ) =
-            update NotAsked (SetLogin login) emptyModel
+            update "https://example.com" NotAsked (SetLogin login) emptyModel
     in
         model.login
 
@@ -41,7 +41,7 @@ getUserStatusAfterSetLogin : WebData User -> String -> Model -> WebData User
 getUserStatusAfterSetLogin user login model =
     let
         ( _, _, user ) =
-            update user (SetLogin login) model
+            update "https://example.com" user (SetLogin login) model
     in
         user
 
@@ -62,7 +62,7 @@ getTryLogin : WebData User -> Model -> WebData User
 getTryLogin user model =
     let
         ( _, _, userStatus ) =
-            update user TryLogin model
+            update "https://example.com" user TryLogin model
     in
         userStatus
 
