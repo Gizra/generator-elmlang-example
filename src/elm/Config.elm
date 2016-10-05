@@ -1,10 +1,10 @@
 module Config exposing (..)
 
-import Config.Model as Config exposing (BackendConfig)
+import Config.Model as Config exposing (Model)
 import Time exposing (Time)
 
 
-localBackend : BackendConfig
+localBackend : Model
 localBackend =
     { backendUrl = "https://api.github.com"
     , name = "local"
@@ -12,7 +12,7 @@ localBackend =
     }
 
 
-prodBackend : BackendConfig
+prodBackend : Model
 prodBackend =
     { backendUrl = "https://api.github.com"
     , name = "gh-pages"
@@ -20,7 +20,7 @@ prodBackend =
     }
 
 
-backends : List BackendConfig
+backends : List Model
 backends =
     [ localBackend
     , prodBackend
